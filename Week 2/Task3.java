@@ -1,70 +1,41 @@
+import java.io.*;
 import java.util.*;
 import java.util.stream.*;
+import static java.util.stream.Collectors.toList;
 
-class Person {
-    String name;
-    int age;
+class Result {
+    public static void miniMaxSum(List<Integer> arr) {
+        long minSum = Long.MAX_VALUE;
+        long maxSum = Long.MIN_VALUE;
 
-    Person(String name, int age) {
-        this.name = name;
-        this.age = age;
+        for (int i = 0; i < arr.size(); i++) {
+            long currentSum = 0;
+
+            for (int j = 0; j < arr.size(); j++) {
+                if (i != j) {
+                    currentSum += arr.get(j);
+                }
+            }
+
+            minSum = Math.min(minSum, currentSum);
+            maxSum = Math.max(maxSum, currentSum);
+        }
+        System.out.println(minSum + " " + maxSum);
     }
 
-    String getName() {
-        return name;
-    }
 
-    int getAge() {
-        return age;
-    }
-
-    static boolean isOlderThan(Person p, int limit) {
-        return p.age > limit;
-    }
 }
 
-public class Main {
+class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
-    public static void main(String[] args) {
+        List<Integer> arr = Stream.of(bufferedReader.readLine().replaceAll("\\s+$", "").split(" "))
+            .map(Integer::parseInt)
+            .collect(toList());
 
-        Scanner sc = new Scanner(System.in);
+        Result.miniMaxSum(arr);
 
-        int n = sc.nextInt();
-
-        List<Person> list = new ArrayList<>();
-
-        for (int i = 0; i < n; i++) {
-            String name = sc.next();
-            int age = sc.nextInt();
-            list.add(new Person(name, age));
-        }
-
-        int ageLimit = sc.nextInt();
-
-
-        String sortedNames = list.stream()
-                .sorted(Comparator.comparing(Person::getName))
-                .map(Person::getName)
-                .collect(Collectors.joining(" "));
-
-        System.out.println(sortedNames);
-
-        String olderNames = IntStream.range(0, list.size())
-                .mapToObj(list::get)
-                .filter(p -> Person.isOlderThan(p, ageLimit))
-                .map(Person::getName)
-                .collect(Collectors.joining(" "));
-
-        System.out.println(olderNames);
-
-   
-        String upperNames = list.stream()
-                .map(Person::getName)
-                .map(String::toUpperCase)
-                .collect(Collectors.joining(" "));
-
-        System.out.println(upperNames);
-
-        sc.close();
+        bufferedReader.close();
     }
 }
